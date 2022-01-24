@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
   addPerson,
@@ -12,36 +6,42 @@ import {
   deletePerson,
 } from "../modules/services/Person";
 import { useMutation, useQueryClient } from "react-query";
-
 import PersonForm from "../components/PersonForm";
 import Colors from "../constants/Colors";
+import { emailValidate } from "../modules/resources/utils/regexUtils";
 
 const PersonEdit = ({ route, navigation }) => {
   const { id, title, businessName, personParam } = route.params;
   const [person, setPerson] = useState({
-    personId: '',
-    name: '',
-    role: '',
-    email: '',
-    phone: '',
-    join_date: '',
+    personId: "",
+    name: "",
+    role: "",
+    email: "",
+    phone: "",
+    join_date: "",
   });
   const queryClient = useQueryClient();
 
   // Add person mutation
   const addMutation = useMutation(({ id, person }) => addPerson(id, person), {
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries("persons");
       navigation.goBack();
+    },
+    onError: () => {
+      alert("An error occurred while saving the changes");
     },
   });
   // Edit person mutation
   const editMutation = useMutation(
     ({ id, personId, person }) => updatePerson(id, personId, person),
     {
-      onSettled: () => {
+      onSuccess: () => {
         queryClient.invalidateQueries("persons");
         navigation.goBack();
+      },
+      onError: () => {
+        alert("An error occurred while saving the changes");
       },
     }
   );
@@ -49,9 +49,12 @@ const PersonEdit = ({ route, navigation }) => {
   const deleteMutation = useMutation(
     ({ id, personId }) => deletePerson(id, personId),
     {
-      onSettled: () => {
+      onSuccess: () => {
         queryClient.invalidateQueries("persons");
         navigation.goBack();
+      },
+      onError: () => {
+        alert("An error occurred while saving the changes");
       },
     }
   );
@@ -94,11 +97,29 @@ const PersonEdit = ({ route, navigation }) => {
     );
   };
 
+  const validateSubmit = () => {
+    let alertMessage = "";
+    const filledFields =
+      person.name !== "" && person.email !== "" && person.role !== "";
+    const emailFormatValid = emailValidate(person.email);
+    if (!filledFields) {
+      alertMessage += "Please check if all required fields are filled. ";
+    } else if (!emailFormatValid) {
+      alertMessage += "Please check email format.";
+    }
+    if (!emailFormatValid || !filledFields) {
+      alert(alertMessage);
+    }
+    return emailFormatValid && filledFields;
+  };
+
   const handleSubmit = () => {
-    if (title === "Edit") {
-      editMutation.mutate({ id, personId: person.personId, person });
-    } else {
-      addMutation.mutate({ id, person });
+    if (validateSubmit()) {
+      if (title === "Edit") {
+        editMutation.mutate({ id, personId: person.personId, person });
+      } else {
+        addMutation.mutate({ id, person });
+      }
     }
   };
 

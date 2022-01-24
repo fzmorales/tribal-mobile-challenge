@@ -5,7 +5,7 @@ export const getPersonList = (businessId) => {
         return res.data.persons;
       })
       .catch((error) => {
-        return error.response;
+        throw error;
       });
 }
 export const addPerson = async (id, person) => {
@@ -13,7 +13,7 @@ export const addPerson = async (id, person) => {
         return res.data;
       })
       .catch((error) => {
-        return error.response;
+        throw error;
       });
 }
 export const updatePerson = async (id,personId, person) => {
@@ -21,7 +21,7 @@ export const updatePerson = async (id,personId, person) => {
         return res.data;
       })
       .catch((error) => {
-        return error.response;
+        throw error;
       });
 }
 export const deletePerson = async (id, personId) => {
@@ -29,6 +29,6 @@ export const deletePerson = async (id, personId) => {
         return res.data;
       })
       .catch((error) => {
-        return error.response;
+        throw error;
       });
 }

@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import React, { useState } from "react";
 import BusinessForm from "../components/BusinessForm";
 import { useMutation, useQueryClient } from "react-query";
@@ -21,32 +15,51 @@ const BusinessEdit = ({ route, navigation }) => {
   const [text, onChangeText] = useState(name);
   //Add Business mutation
   const addMutation = useMutation(({ name }) => addBusiness(name), {
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries("businesses");
       navigation.navigate("Home");
+    },
+    onError: () => {
+      alert("An error occurred while saving the changes");
     },
   });
   // Update Business mutation
   const editMutation = useMutation(({ id, name }) => updateBusiness(id, name), {
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries("businesses");
       navigation.navigate("BusinessDetail", { title: text, id });
+    },
+    onError: () => {
+      alert("An error occurred while saving the changes");
     },
   });
   // Delete Business mutation
   const deleteMutation = useMutation(({ id }) => deleteBusiness(id), {
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries("businesses");
       navigation.navigate("Home");
     },
+    onError: () => {
+      alert("An error occurred while saving the changes");
+    },
   });
-  const handleSubmit = () => {
-    if (title === "Edit") {
-      editMutation.mutate({ id, name: text });
-    } else {
-      addMutation.mutate({ name: text });
+
+  const validateSubmit = () => {
+    const filledFields = text !== "";
+    if (!filledFields) {
+      alert("This field cannot be empty");
     }
-    queryClient.invalidateQueries("businesses");
+    return filledFields;
+  };
+  const handleSubmit = () => {
+    if (validateSubmit()) {
+      if (title === "Edit") {
+        editMutation.mutate({ id, name: text });
+      } else {
+        addMutation.mutate({ name: text });
+      }
+      queryClient.invalidateQueries("businesses");
+    }
   };
   const handleDelete = () => {
     Alert.alert(

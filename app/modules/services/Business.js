@@ -5,7 +5,7 @@ export const getBusinessList = async () => {
         return res.data.businesses;
       })
       .catch((error) => {
-        return error.response;
+        throw error;
       });
 }
 export const addBusiness = async (name) => {
@@ -13,7 +13,7 @@ export const addBusiness = async (name) => {
         return res.data;
       })
       .catch((error) => {
-        return error.response;
+        throw error;
       });
 }
 export const updateBusiness = async (id,name) => {
@@ -21,7 +21,7 @@ export const updateBusiness = async (id,name) => {
         return res.data;
       })
       .catch((error) => {
-        return error.response;
+        throw error;
       });
 }
 export const deleteBusiness = async (id) => {
@@ -29,6 +29,6 @@ export const deleteBusiness = async (id) => {
         return res.data;
       })
       .catch((error) => {
-        return error.response;
+        throw error;
       });
 }

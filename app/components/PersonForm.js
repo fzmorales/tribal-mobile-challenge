@@ -40,7 +40,7 @@ const PersonForm = (props) => {
         <PersonIcon />
         <TextInput
           style={styles.input}
-          placeholder="Name"
+          placeholder="Name *"
           placeholderTextColor={Colors.gray6}
           onChangeText={props.onChangeTextName}
           value={props.person.name}
@@ -51,7 +51,7 @@ const PersonForm = (props) => {
         <GroupIcon />
         <TextInput
           style={styles.input}
-          placeholder="Role"
+          placeholder="Role *"
           placeholderTextColor={Colors.gray6}
           onChangeText={props.onChangeTextRole}
           value={props.person.role}
@@ -62,7 +62,7 @@ const PersonForm = (props) => {
         <EmailIcon />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder="Email *"
           placeholderTextColor={Colors.gray6}
           onChangeText={props.onChangeTextEmail}
           value={props.person.email}
@@ -92,6 +92,7 @@ const PersonForm = (props) => {
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
+        themeVariant={'light'}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
